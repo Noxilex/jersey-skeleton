@@ -113,28 +113,50 @@ function modify_cell(x, y, value){
 	table[y][x]=value;
 } 
 
-
-function login(){
-	var username = $("#nickname-input").val();
-	var password = $("#password-input").val();
-	
-	//Serveur connection.
-	swal("Logged", "Welcome back " + username + ".", "success");
-
-	$("#group-auth").hide();
-	$("#gamepanel").show();
+//Makes one cell flowing to another
+function flaw(Cell, Cell, value){
+		
 }
 
-function register(){
+function reduce_cell(){
+	
+}
+
+
+function login(){
+	var login = $("#nickname-input").val();
+	var pwd = $("#password-input").val();
+	$.get("v1/userdb/auth/login?name="+login+"&mdp="+pwd, function(data, status){
+		console.log(data.text);
+	});
+	//Serveur connection.
+	swal("Logged", "Welcome back " + login + ".", "success");
+}
+
+function register() {
+
 	var username = $("#nickname-input").val();
-	var password = $("#password-input").val();
+	var pwd = $("#password-input").val();
+	var url = "v1/userdb/";
 
-	if(Math.random() > 0.5){
-		swal("Register failed", "The username \"" + username + "\" is already taken.", "error");
-	}else{
-		swal("Registered", "Thanks for registering \"" + username + "\".\nYou have been logged in.", "success");
-		$("#group-auth").hide();
-		$("#gamepanel").show();		
-	}
-
+	$.ajax({
+		type : 'POST',
+		contentType : 'application/json',
+		url : url,
+		dataType : "json",
+		data : JSON.stringify({
+			"name" : username,
+			"password" : pwd,
+			"id" : 0
+		}),
+		success :function(data, textStatus, jqXHR) {
+			swal("Registered", "Thanks for registering \"" + username + "\".\nYou have been logged in.", "success");
+			$("#group-auth").hide();
+			$("#gamepanel").show();
+			afficheUser(data);
+		},
+		error :function(jqXHR, textStatus, errorThrown) {
+			swal("Register failed", "The username \"" + username + "\" is already taken.", "error");
+		}
+	});
 }
